@@ -227,9 +227,21 @@ class AssignmentsGradesService(object):
             results_url,
             accept='application/vnd.ims.lis.v2.resultcontainer+json'
         )
+        result = scores["body"]
+        while scores["next_page_url"] is not None:
+            scores["next_page_url"] = scores["next_page_url"].replace("lineitems", "lineItems")
+            try:
+                scores = self._service_connector.make_service_request(
+                    self._service_data['scope'],
+                    scores["next_page_url"],
+                    accept='application/vnd.ims.lis.v2.resultcontainer+json'
+                )
+            except Exception as e:
+                return None
+            result = result + scores["body"]
         if not isinstance(scores['body'], list):
             raise LtiException('Unknown response type received for results')
-        return scores['body']
+        return result
 
     def _add_url_path_ending(self, url, url_path_ending):
         # type: (str, str) -> str
