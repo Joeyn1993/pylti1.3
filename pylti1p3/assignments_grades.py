@@ -103,6 +103,8 @@ class AssignmentsGradesService(object):
             lineitems_url,
             accept='application/vnd.ims.lis.v2.lineitemcontainer+json'
         )
+        if lineitems.get("next_page_url") is not None:
+            lineitems["next_page_url"] = lineitems["next_page_url"].replace("lineitems", "lineItems")
         if not isinstance(lineitems['body'], list):
             raise LtiException('Unknown response type received for line items')
         return lineitems['body'], lineitems['next_page_url']
