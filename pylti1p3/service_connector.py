@@ -109,6 +109,11 @@ class ServiceConnector(object):
             'Authorization': 'Bearer ' + access_token,
             'Accept': accept
         }
+        
+        if "?" in url and "limit" not in url:
+           url += "&limit=500"
+        elif "limit" not in url:
+           url += "?limit=500"
 
         if is_post:
             headers['Content-Type'] = content_type
